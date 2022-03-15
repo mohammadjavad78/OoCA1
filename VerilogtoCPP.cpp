@@ -18,7 +18,7 @@ Gate VerilogtoCPP::getelem(std::string line)
 {
     std::vector<std::string> elems{"not", "nand", "and", "nor", "xor", "or"};
     std::string name{};
-    std::vector<std::string> pins{};
+    std::vector<std::reference_wrapper<Wire>> pins{};
     Gate g{};
     for (auto elem : elems)
     {
@@ -37,7 +37,8 @@ Gate VerilogtoCPP::getelem(std::string line)
                 ss = line.find(',', ss + 1);
                 if (ss == -1)
                     pin = pin.substr(0, pin.find(')'));
-                pins.push_back(pin);
+                // searchwire(Wire(pin, 0)).disp();
+                pins.push_back(searchwire(Wire(pin, 0)));
             }
             g.set_pins(pins);
             return g;
@@ -75,7 +76,7 @@ void VerilogtoCPP::getwire(std::string line)
                     lastsim = line.size();
                     wirereading = elem;
                 }
-                int ss{wires + elem.size()};
+                int ss{wires + static_cast<int>(elem.size())};
                 while (ss != -1 && ss < lastsim)
                 {
                     std::string pin{line.substr(ss + 1, line.find(',', ss + 1) - ss - 1)};
@@ -110,4 +111,12 @@ void VerilogtoCPP::getwire(std::string line)
             w.set_name("");
         }
     }
+}
+
+Wire &VerilogtoCPP::searchwire(Wire &&v)
+{
+    for (auto &x : Wires)
+        if (x == v)
+            return x;
+    return v;
 }

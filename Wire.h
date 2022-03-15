@@ -21,6 +21,11 @@ public:
     bool is_valid();
     std::string split(std::string);
     bool operator==(Wire);
+    friend std::ostream &operator<<(std::ostream &os, Wire w)
+    {
+        os << "name:" << w.name << "-level:" << w.level;
+        return os;
+    }
 
 private:
     std::string name{};

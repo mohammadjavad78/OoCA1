@@ -7,6 +7,7 @@
 #include "Gate.h"
 #include "Wire.h"
 #include <vector>
+#include <functional>
 
 class VerilogtoCPP
 {
@@ -16,9 +17,15 @@ public:
     Gate getelem(std::string);
     void getwire(std::string);
     void disp();
-    Wire searchwire(std::string);
+    Wire &searchwire(Wire &&v);
+    friend std::ostream &operator<<(std::ostream &os, VerilogtoCPP v)
+    {
+        for (auto x : v.Gates)
+            std::cout << x;
+        return os;
+    }
 
-private:
+    // private:
     std::vector<Gate> Gates{};
     std::vector<Wire> Wires{};
     std::string wirereading{};

@@ -29,7 +29,7 @@ std::string Wire::split(std::string s)
 
 bool Wire::operator==(Wire v)
 {
-    if (v.name == this->name)
+    if (split(v.name) == split(this->name))
         return true;
     return false;
 }
