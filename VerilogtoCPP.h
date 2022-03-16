@@ -14,9 +14,9 @@ class VerilogtoCPP
 public:
     VerilogtoCPP(std::string);
     VerilogtoCPP(){};
-    Gate getelem(std::string);
-    void getwire(std::string);
-    void disp();
+    Gate getelem(const std::string &);
+    void disp() const;
+    void getwire(const std::string &);
     Wire &searchwire(Wire &&v);
     friend std::ostream &operator<<(std::ostream &os, VerilogtoCPP v)
     {
@@ -26,9 +26,9 @@ public:
         return os;
     }
     void setlayyer();
-    void print();
+    void print() const;
     void sort();
-    void setinput(std::vector<char>);
+    void setinput(const std::vector<char> &);
 
 private:
     std::vector<Gate> Gates{};

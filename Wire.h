@@ -15,23 +15,23 @@ public:
     Wire(){};
     void set_name(std::string);
     void set_level(size_t);
-    std::string get_name();
-    size_t get_level();
-    void disp();
-    bool is_valid();
-    std::string split(std::string);
-    bool operator==(Wire);
-    // firend size_t max(size_t i1, size_t i2) { return i1 > i2 ? i1 : i2; }
-    friend std::ostream &operator<<(std::ostream &os, Wire w)
+    std::string get_name() const;
+    size_t get_level() const;
+    void disp() const;
+    bool is_valid() const;
+    std::string split(std::string) const;
+    bool operator==(const Wire &) const;
+    friend std::ostream &operator<<(std::ostream &os, const Wire &w)
     {
         os << w.name;
         return os;
     }
-    char getvalue();
+    char getvalue() const;
     void setvalue(char);
-    // void operator=(Wire &w) { value = w.getvalue(); }
-    void operator=(Wire w) { value = w.getvalue(); }
-    void operator=(char x) { value = x; }
+    double getcontrollability() const;
+    void setcontrollability(double);
+    void operator=(const Wire &w);
+    void operator=(char x);
     friend Wire operator!(Wire &w)
     {
         Wire ww{w.get_name(), w.get_level()};
@@ -100,6 +100,7 @@ private:
     std::string name{};
     size_t level{};
     char value{'x'};
+    double controllability{};
 };
 
 #endif
