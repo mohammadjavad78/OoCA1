@@ -4,15 +4,26 @@ VerilogtoCPP::VerilogtoCPP(std::string s)
 {
     std::string myText;
     std::ifstream MyReadFile(s);
-    std::ofstream MyFile("filename.txt");
     while (getline(MyReadFile, myText))
     {
         getwire(myText);
         Gate ee{getelem(myText)};
         if (ee.is_valid())
             Gates.push_back(ee);
+        lines++;
     }
     MyReadFile.close();
+
+    std::ifstream MyReadFile2(s);
+    std::string myText2;
+    std::ofstream MyFile("filename.txt");
+    for (int i{}; i < startgateline; i++)
+    {
+        getline(MyReadFile2, myText2);
+        MyFile << myText2;
+    }
+    MyReadFile2.close();
+    MyFile.close();
 }
 Gate VerilogtoCPP::getelem(std::string line)
 {
@@ -23,8 +34,11 @@ Gate VerilogtoCPP::getelem(std::string line)
     for (auto elem : elems)
     {
         int i{static_cast<int>(line.find(elem))};
+        if (count)
+            startgateline = lines;
         if (i != -1)
         {
+            count = false;
             int firstpar{static_cast<int>(line.find('('))};
             int lastpar{static_cast<int>(line.find(')'))};
             g.set_solve_name(elem);
@@ -85,7 +99,13 @@ void VerilogtoCPP::getwire(std::string line)
                         pin = pin.substr(0, pin.find(','));
                     w.set_name(pin);
                     if (w.is_valid())
+                    {
                         Wires.push_back(w);
+                        if (elem == "input" || wirereading == "input")
+                        {
+                            InputWires.push_back(Wires.size() - 1);
+                        }
+                    }
                     w.set_name("");
                 }
             }
@@ -107,7 +127,13 @@ void VerilogtoCPP::getwire(std::string line)
                 pin = pin.substr(0, pin.find(','));
             w.set_name(pin);
             if (w.is_valid())
+            {
                 Wires.push_back(w);
+                if (wirereading == "input")
+                {
+                    InputWires.push_back(Wires.size() - 1);
+                }
+            }
             w.set_name("");
         }
     }
@@ -119,4 +145,48 @@ Wire &VerilogtoCPP::searchwire(Wire &&v)
         if (x == v)
             return x;
     return v;
+}
+
+void VerilogtoCPP::setlayyer()
+{
+    size_t k = 0;
+    size_t k_new = 1;
+    while (k_new != k)
+    {
+        k = k_new;
+        for (size_t i{}; i < Gates.size(); i++)
+        {
+            Gates[i].setlevel();
+            if (Gates[i].getlevel() > k_new)
+                k_new = Gates[i].getlevel();
+        }
+        // std::cout << k << " ";
+    }
+}
+void VerilogtoCPP::print()
+{
+    std::string myText;
+    std::ofstream MyFile("filename.txt", std::ios_base::app);
+    for (size_t i{}; i < Gates.size(); i++)
+    {
+        MyFile << Gates[i];
+    }
+    MyFile << "\nendmodule";
+    MyFile.close();
+    // std::cout << Gates.size() << std::endl;
+}
+void VerilogtoCPP::sort()
+{
+    std::sort(Gates.begin(), Gates.end());
+}
+
+void VerilogtoCPP::setinput(std::vector<char> v)
+{
+    for (size_t i{}; i < InputWires.size(); i++)
+    {
+        Wires[InputWires[i]].setvalue(v[i]);
+        //     Wires[i].disp();
+    }
+    for (auto x : Gates)
+        x.solve();
 }

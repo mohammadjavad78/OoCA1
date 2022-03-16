@@ -24,11 +24,21 @@ public:
     std::string split(std::string);
     friend std::ostream &operator<<(std::ostream &os, Gate g)
     {
+        os << g.solve_name << " " << g.name << "(";
         for (size_t i{}; i < g.get_pins().size(); i++)
-            os << g.name << "," << g.solve_name << "{" << g.get_pins()[i].get() << ","
-               << "}" << std::endl;
+        {
+            if (i != g.get_pins().size() - 1)
+                os << g.get_pins()[i].get() << ",";
+            else
+                os << g.get_pins()[i].get();
+        }
+        os << ");" << std::endl;
         return os;
     }
+    void setlevel();
+    size_t getlevel();
+    operator size_t();
+    void solve();
 
 private:
     std::string name{};

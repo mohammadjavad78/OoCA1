@@ -21,14 +21,23 @@ public:
     friend std::ostream &operator<<(std::ostream &os, VerilogtoCPP v)
     {
         for (auto x : v.Gates)
-            std::cout << x;
+            os << x;
+        os << v.Gates.size();
         return os;
     }
+    void setlayyer();
+    void print();
+    void sort();
+    void setinput(std::vector<char>);
 
-    // private:
+private:
     std::vector<Gate> Gates{};
     std::vector<Wire> Wires{};
+    std::vector<size_t> InputWires{};
     std::string wirereading{};
+    bool count{true};
+    int lines{};
+    int startgateline{-1};
 };
 
 #endif

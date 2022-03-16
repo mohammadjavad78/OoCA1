@@ -8,7 +8,7 @@ std::string Wire::get_name() { return name; }
 size_t Wire::get_level() { return level; }
 void Wire::disp()
 {
-    std::cout << "name:" << name << "," << level << std::endl;
+    std::cout << "name:" << name << ",level:" << level << ",value:" << value << std::endl;
 }
 bool Wire::is_valid()
 {
@@ -33,3 +33,6 @@ bool Wire::operator==(Wire v)
         return true;
     return false;
 }
+
+char Wire::getvalue() { return value; }
+void Wire::setvalue(char v) { value = v; }

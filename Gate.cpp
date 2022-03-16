@@ -31,3 +31,65 @@ std::string Gate::split(std::string s)
     }
     return ss;
 }
+
+void Gate::setlevel()
+{
+    size_t max{0};
+    for (size_t i{1}; i < get_pins().size(); i++)
+    {
+        if (get_pins()[i].get().get_level() > max)
+            max = get_pins()[i].get().get_level();
+    }
+    this->get_pins()[0].get().set_level(max + 1);
+    level = max + 1;
+}
+size_t Gate::getlevel() { return level; }
+
+Gate::operator size_t() { return level; }
+
+void Gate::solve()
+{
+    Wire ww{"solved", 0};
+    ww.setvalue('1');
+    if (solve_name == "not")
+        get_pins()[0].get() = !get_pins()[1].get();
+    else if (solve_name == "nand")
+        for (size_t i{1}; i < get_pins().size(); i++)
+        {
+            ww = ww & get_pins()[i].get();
+            get_pins()[0].get() = !ww;
+        }
+    else if (solve_name == "and")
+        for (size_t i{1}; i < get_pins().size(); i++)
+        {
+            ww = ww & get_pins()[i].get();
+            get_pins()[0].get() = ww;
+        }
+    else if (solve_name == "or")
+    {
+        ww.setvalue('0');
+        for (size_t i{1}; i < get_pins().size(); i++)
+        {
+            ww = ww | get_pins()[i].get();
+            get_pins()[0].get() = ww;
+        }
+    }
+    else if (solve_name == "nor")
+    {
+        ww.setvalue('0');
+        for (size_t i{1}; i < get_pins().size(); i++)
+        {
+            ww = ww | get_pins()[i].get();
+            get_pins()[0].get() = !ww;
+        }
+    }
+    else if (solve_name == "xor")
+    {
+        ww.setvalue('0');
+        for (size_t i{1}; i < get_pins().size(); i++)
+        {
+            ww = ww ^ get_pins()[i].get();
+            get_pins()[0].get() = !ww;
+        }
+    }
+}
